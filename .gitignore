@@ -1,0 +1,18 @@
+# Virtual environment
+env/
+venv/
+*.pyc
+*.pyo
+__pycache__/
+
+# Database settings & secrets
+.env
+
+# Migrations
+*/migrations/*.pyc
+*/migrations/__pycache__/
+
+# IDE files
+.vscode/
+.idea/
+

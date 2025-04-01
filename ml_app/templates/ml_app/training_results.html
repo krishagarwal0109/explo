@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .chart {
+            margin: 20px 0;
+        }
+
+        .chart img {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .metrics-table th, .metrics-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .metrics-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .metrics-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .section h2 {
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            color: #444;
+        }
+
+        .section p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .feature-selection-explanation {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .feature-selection-explanation p {
+            margin: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Training Results</h1>
+
+        <!-- Model Performance Metrics -->
+	<div class="section">
+            <h2>Feature Correlation Heatmap</h2>
+            <div class="chart">
+                <img src="data:image/png;base64,{{ feature_correlation_plot }}" alt="Feature Correlation Heatmap">
+            </div>
+            <p>
+                This heatmap shows the correlation between all features and the target variable (RUL). The two features,
+                'Max. Voltage Dischar. (V)' and 'Min. Voltage Charg. (V)', were selected based on their high correlation with RUL.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Model Performance Metrics</h2>
+            <table class="metrics-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>MAE</th>
+                        <th>RMSE</th>
+                        <th>R²</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for model, metrics in model_metrics.items %}
+                        <tr>
+                            <td>{{ model }}</td>
+                            <td>{{ metrics.MAE|floatformat:2 }}</td>
+                            <td>{{ metrics.RMSE|floatformat:2 }}</td>
+                            <td>{{ metrics.R2|floatformat:2 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Model Performance Comparison -->
+        <div class="section">
+            <h2>Model Performance Comparison</h2>
+            <div class="chart">
+                <img src="data:image/png;base64,{{ model_performance_plot }}" alt="Model Performance Comparison">
+            </div>
+        </div>
+
+        <!-- Actual vs Predicted RUL -->
+        <div class="section">
+            <h2>Actual vs Predicted RUL</h2>
+            <div class="chart">
+                <img src="data:image/png;base64,{{ actual_vs_predicted_plot }}" alt="Actual vs Predicted RUL">
+            </div>
+            <p>
+                This plot compares the actual RUL values with the predicted RUL values for all models. A good model will have
+                points close to the diagonal line.
+            </p>
+        </div>
+
+        <!-- Distribution of Predictions -->
+        <div class="section">
+            <h2>Distribution of Predicted RUL</h2>
+            <div class="chart">
+                <img src="data:image/png;base64,{{ predictions_distribution_plot }}" alt="Distribution of Predicted RUL">
+            </div>
+        </div>
+
+        <!-- Residual Plots -->
+        <div class="section">
+            <h2>Residual Plots</h2>
+            <div class="chart">
+                <img src="data:image/png;base64,{{ residuals_plot }}" alt="Residual Plots">
+            </div>
+            <p>
+                Residual plots show the difference between actual and predicted values. A good model will have residuals
+                randomly distributed around zero.
+            </p>
+        </div>
+
+        <!-- Dataset Statistics -->
+        <div class="section">
+            <h2>Dataset Statistics</h2>
+            <table class="metrics-table">
+                <thead>
+                    <tr>
+                        <th>Statistic</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Number of Samples</td>
+                        <td>{{ dataset_stats.num_samples }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Features</td>
+                        <td>{{ dataset_stats.num_features }}</td>
+                    </tr>
+                    <tr>
+                        <td>Mean RUL</td>
+                        <td>{{ dataset_stats.mean_rul|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Standard Deviation of RUL</td>
+                        <td>{{ dataset_stats.std_rul|floatformat:2 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="section">
+            <a href="/" class="btn">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

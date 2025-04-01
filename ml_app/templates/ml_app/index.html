@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery RUL Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            text-align: left;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #f9f9f9;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        ul li:hover {
+            transform: translateX(10px);
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Battery Remaining Useful Life (RUL) Prediction</h1>
+
+        <!-- Project Description -->
+        <div class="section">
+            <h2>About the Project</h2>
+            <p>
+                This project predicts the <strong>Remaining Useful Life (RUL)</strong> of a battery using machine learning models. 
+                RUL is the number of charge-discharge cycles a battery can undergo before it reaches the end of its useful life. 
+                The project uses three machine learning models to predict RUL based on input features such as voltage, discharge time, and charging time.
+            </p>
+            <h3>Use Cases and Applications</h3>
+            <p>
+                This predictive maintenance system is designed for:
+            </p>
+            <ul>
+                <li><strong>Lithium-ion batteries</strong> used in electric vehicles (EVs), smartphones, laptops, and power tools</li>
+                <li><strong>Industrial battery systems</strong> in data centers, telecom towers, and renewable energy storage</li>
+                <li><strong>Medical device batteries</strong> in portable medical equipment</li>
+                <li><strong>Aerospace batteries</strong> used in satellites and aircraft systems</li>
+            </ul>
+            
+            <h3>Why Use This Project?</h3>
+            <p>
+                This system helps:
+            </p>
+            <ul>
+                <li>Prevent unexpected battery failures and downtime</li>
+                <li>Optimize battery replacement schedules</li>
+                <li>Reduce maintenance costs through predictive rather than reactive maintenance</li>
+                <li>Extend battery lifespan through early detection of degradation</li>
+                <li>Improve safety by identifying batteries at risk of failure</li>
+            </ul>
+
+	    <h3>How to Use</h3>
+            <p>
+                To predict the RUL of a battery:
+            </p>
+            <ol>
+                <li>Click the <strong>"Start Prediction"</strong> button.</li>
+                <li>Enter the required input values for the battery.</li>
+                <li>Click <strong>"Next"</strong> to move to the next input field.</li>
+                <li>After entering all inputs, click <strong>"Predict"</strong> to see the results.</li>
+            </ol>
+
+            <a href="/predict" class="btn">Start Prediction</a>
+	    <a href="/train" class="btn">View Training Results</a>
+        </div>
+
+        <!-- Model Descriptions -->
+        <div class="section">
+            <h2>Models Used</h2>
+            <ul>
+                <li>
+                    <strong>k-Nearest Neighbors (kNN):</strong>
+                    A simple, non-parametric algorithm that predicts RUL based on the average of the k-nearest data points in the training set.
+                </li>
+                <li>
+                    <strong>Support Vector Machine (SVM):</strong>
+                    A powerful supervised learning model that finds the optimal hyperplane to separate data points and predict RUL.
+                </li>
+                <li>
+                    <strong>Random Forest:</strong>
+                    An ensemble learning method that combines multiple decision trees to improve prediction accuracy and reduce overfitting.
+                </li>
+            </ul>
+        </div>
+
+        <!-- Terminology Explanation -->
+        <div class="section">
+            <h2>Terminology Explained</h2>
+            <ul>
+                <li>
+                    <strong>RUL (Remaining Useful Life):</strong>
+                    The number of charge-discharge cycles a battery can undergo before it fails.
+                </li>
+                <li>
+                    <strong>Cycle Index:</strong>
+                    The number of charge-discharge cycles the battery has undergone so far.
+                </li>
+                <li>
+                    <strong>Discharge Time:</strong>
+                    The time taken to discharge the battery from full to empty.
+                </li>
+                <li>
+                    <strong>Max. Voltage Discharge:</strong>
+                    The maximum voltage observed during the discharge cycle.
+                </li>
+                <li>
+                    <strong>Min. Voltage Charge:</strong>
+                    The minimum voltage observed during the charging cycle.
+                </li>
+                <li>
+                    <strong>Time at 4.15V:</strong>
+                    The time spent at 4.15V during the charging cycle.
+                </li>
+                <li>
+                    <strong>Time Constant Current:</strong>
+                    The time spent in the constant current phase of the charging cycle.
+                </li>
+                <li>
+                    <strong>Charging Time:</strong>
+                    The total time taken to fully charge the battery.
+                </li>
+                <li>
+                    <strong>MAE (Mean Absolute Error):</strong>
+                    The average absolute difference between predicted and actual values.
+                </li>
+                <li>
+                    <strong>RMSE (Root Mean Squared Error):</strong>
+                    The square root of the average squared difference between predicted and actual values.
+                </li>
+                <li>
+                    <strong>R² (R-squared):</strong>
+                    A statistical measure that represents the proportion of variance in the dependent variable that is predictable from the independent variables.
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
