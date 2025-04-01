@@ -161,7 +161,7 @@ def predict_rul(request):
             historical_data = BatteryData.objects.all().order_by('-id')[:5] 
             historical_rul = [data.rul for data in historical_data]
             avg_historical_rul = np.mean(historical_rul)
-            insights.append(f"The current RUL prediction ({rf_pred:.2f}) is {'above' if rf_pred > avg_historical_rul else 'below'} the historical average of {avg_historical_rul:.2f} cycles."
+            insights.append(f"The current RUL prediction ({rf_pred:.2f}) is {'above' if rf_pred > avg_historical_rul else 'below'} the historical average of {avg_historical_rul:.2f} cycles.")
             
             if rf_pred > 100:
                 health_status = "Good"
