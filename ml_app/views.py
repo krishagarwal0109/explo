@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -19,9 +20,14 @@ def index(request):
 def train_models():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
-    file_path = os.path.join(current_dir, 'Final Database.csv')
+    file_path = os.path.join(current_dir, '..', 'Final Database.csv')
+    
+    try:
+        df = pd.read_csv(file_path)
+        print(df.head())
+    except FileNotFoundError:
+        print(f"Error: The file at {file_path} was not found.")
 
-    df = pd.read_csv(file_path)
     df['Battery ID'] = 0
     batteries = []
     ID = 1
