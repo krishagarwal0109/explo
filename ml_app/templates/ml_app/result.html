@@ -17,7 +17,6 @@
             min-height: 100vh;
             padding: 20px;
         }
-
         .container {
             background: white;
             padding: 30px;
@@ -28,32 +27,26 @@
             text-align: center;
             animation: fadeIn 1s ease-in-out;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         h1 {
             color: #333;
             margin-bottom: 20px;
         }
-
         .results {
             text-align: left;
             margin-bottom: 20px;
         }
-
         .results p {
             margin: 10px 0;
             color: #555;
         }
-
         .results ul {
             list-style-type: none;
             padding: 0;
         }
-
         .results ul li {
             background: #f9f9f9;
             margin: 10px 0;
@@ -62,19 +55,22 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
         }
-
         .results ul li:hover {
             transform: translateX(10px);
         }
-
         .chart {
             margin: 20px 0;
         }
-
         .chart img {
             width: 100%;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .highlight {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -85,6 +81,18 @@
             <p><strong>k-Nearest Neighbors Prediction:</strong> {{ knn_pred|floatformat:2 }} cycles</p>
             <p><strong>Support Vector Machine Prediction:</strong> {{ svm_pred|floatformat:2 }} cycles</p>
             <p><strong>Random Forest Prediction:</strong> {{ rf_pred|floatformat:2 }} cycles</p>
+
+            <h2>Model Performance Metrics</h2>
+            <ul>
+                {% for model, metrics in model_metrics.items %}
+                    <li>
+                        <strong>{{ model }}</strong>:
+                        MAE = {{ metrics.MAE|floatformat:2 }},
+                        RMSE = {{ metrics.RMSE|floatformat:2 }},
+                        R² = {{ metrics.R2|floatformat:2 }}
+                    </li>
+                {% endfor %}
+            </ul>
 
             <h2>Insights</h2>
             <ul>
@@ -100,17 +108,12 @@
         </div>
 
         <div class="chart">
-            <h2>Distribution of Predicted RUL</h2>
-            <img src="data:image/png;base64,{{ rul_distribution_plot }}" alt="Distribution of Predicted RUL">
-        </div>
-
-        <div class="chart">
             <h2>Model Performance Metrics Comparison</h2>
             <img src="data:image/png;base64,{{ model_performance_plot }}" alt="Model Performance Metrics Comparison">
         </div>
 
         <div class="chart">
-            <h2>Feature Importance (Random Forest)</h2>
+            <h2>Feature Importance (Selected Features)</h2>
             <img src="data:image/png;base64,{{ feature_importance_plot }}" alt="Feature Importance">
         </div>
     </div>

@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
@@ -16,12 +16,10 @@ import base64
 
 def index(request):
     return render(request, 'ml_app/index.html')
-
+    
 def train_models():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    
     file_path = os.path.join(current_dir, '..', 'Final Database.csv')
-    
     try:
         df = pd.read_csv(file_path)
         print(df.head())
@@ -78,10 +76,65 @@ def train_models():
     X_train = sc.fit_transform(X_train)
     X_test = sc.transform(X_test)
 
-    knn_model = KNeighborsRegressor(n_neighbors=3).fit(X_train, y_train)
-    svm_model = SVR(kernel="rbf", C=10000, gamma=0.5, epsilon=0.001).fit(X_train, y_train)
-    rf_model = RandomForestRegressor(n_estimators=100, min_samples_leaf=1, max_features='sqrt').fit(X_train, y_train)
+    # --- Hyperparameter tuning using RandomizedSearchCV ---
 
+    # KNN
+    knn_params = {
+        'n_neighbors': np.arange(1, 20),
+        'weights': ['uniform', 'distance'],
+        'p': [1, 2]
+    }
+    knn_search = RandomizedSearchCV(
+        KNeighborsRegressor(),
+        knn_params,
+        n_iter=10,
+        scoring='neg_root_mean_squared_error',
+        cv=3,
+        random_state=42,
+        n_jobs=-1
+    )
+    knn_search.fit(X_train, y_train)
+    knn_model = knn_search.best_estimator_
+
+    # SVR
+    svr_params = {
+        'C': np.logspace(0, 4, 10),
+        'gamma': ['scale', 'auto'] + list(np.logspace(-3, 1, 5)),
+        'epsilon': np.logspace(-3, -1, 3),
+        'kernel': ['rbf']
+    }
+    svr_search = RandomizedSearchCV(
+        SVR(),
+        svr_params,
+        n_iter=10,
+        scoring='neg_root_mean_squared_error',
+        cv=3,
+        random_state=42,
+        n_jobs=-1
+    )
+    svr_search.fit(X_train, y_train)
+    svm_model = svr_search.best_estimator_
+
+    # Random Forest
+    rf_params = {
+        'n_estimators': [50, 100, 200],
+        'max_features': ['sqrt', 'log2'],
+        'min_samples_leaf': [1, 2, 4],
+        'max_depth': [None, 10, 20, 30]
+    }
+    rf_search = RandomizedSearchCV(
+        RandomForestRegressor(random_state=42),
+        rf_params,
+        n_iter=10,
+        scoring='neg_root_mean_squared_error',
+        cv=3,
+        random_state=42,
+        n_jobs=-1
+    )
+    rf_search.fit(X_train, y_train)
+    rf_model = rf_search.best_estimator_
+
+    # --- Evaluation ---
     def evaluate_model(model, X_test, y_test):
         y_pred = model.predict(X_test)
         mae = mean_absolute_error(y_test, y_pred)
@@ -104,10 +157,8 @@ def train_models():
         knn_model, svm_model, rf_model, sc, model_metrics,
         knn_mae, svm_mae, rf_mae, knn_rmse, svm_rmse, rf_rmse, knn_r2, svm_r2, rf_r2,
         y_pred_knn, y_pred_svm, y_pred_rf, X_test, y_test, df_train, df_test, feature_names, df,
-        feature_correlation_plot,
-        feature_importance_all_plot,
+        feature_correlation_plot, feature_importance_all_plot,
     )
-
 (
     knn_model, svm_model, rf_model, scaler, model_metrics,
     knn_mae, svm_mae, rf_mae, knn_rmse, svm_rmse, rf_rmse, knn_r2, svm_r2, rf_r2,
@@ -118,14 +169,8 @@ def train_models():
 def predict_rul(request):
     if request.method == 'POST':
         input_data = {
-            'Cycle_Index': float(request.POST['cycle_index']),
-            'Discharge Time (s)': float(request.POST['discharge_time']),
-            'Decrement 3.6-3.4V (s)': float(request.POST['decrement_36_34V']),
             'Max. Voltage Dischar. (V)': float(request.POST['max_voltage_discharge']),
             'Min. Voltage Charg. (V)': float(request.POST['min_voltage_charge']),
-            'Time at 4.15V (s)': float(request.POST['time_at_415V']),
-            'Time constant current (s)': float(request.POST['time_constant_current']),
-            'Charging time (s)': float(request.POST['charging_time']),
         }
 
         features = ['Max. Voltage Dischar. (V)', 'Min. Voltage Charg. (V)']
@@ -137,14 +182,8 @@ def predict_rul(request):
         rf_pred = rf_model.predict(input_scaled)[0]
 
         BatteryData.objects.create(
-            cycle_index=input_data['Cycle_Index'],
-            discharge_time=input_data['Discharge Time (s)'],
-            decrement_36_34V=input_data['Decrement 3.6-3.4V (s)'],
             max_voltage_discharge=input_data['Max. Voltage Dischar. (V)'],
             min_voltage_charge=input_data['Min. Voltage Charg. (V)'],
-            time_at_415V=input_data['Time at 4.15V (s)'],
-            time_constant_current=input_data['Time constant current (s)'],
-            charging_time=input_data['Charging time (s)'],
             rul=rf_pred
         )
 

@@ -102,44 +102,9 @@
     <div class="container">
         <form method="post" id="rul-form">
             {% csrf_token %}
-            <!-- Input 1: Cycle Index -->
-            <div class="input-section" id="input-1">
-                <label for="cycle_index">Cycle Index:</label>
-                <input type="number" step="0.01" name="cycle_index" required>
-                <div class="description-section">
-                    <h3>Cycle Index</h3>
-                    <p>The number of charge-discharge cycles the battery has undergone.</p>
-                    <p><em>How to measure:</em> Count the total number of cycles from the battery's usage history.</p>
-                </div>
-                <button type="button" onclick="showNextInput(2)">Next</button>
-            </div>
 
-            <!-- Input 2: Discharge Time -->
-            <div class="input-section hidden" id="input-2">
-                <label for="discharge_time">Discharge Time (s):</label>
-                <input type="number" step="0.01" name="discharge_time" required>
-                <div class="description-section">
-                    <h3>Discharge Time</h3>
-                    <p>The time taken to discharge the battery from full to empty.</p>
-                    <p><em>How to measure:</em> Use a stopwatch or battery monitoring tool to measure the discharge duration.</p>
-                </div>
-                <button type="button" onclick="showNextInput(3)">Next</button>
-            </div>
-
-            <!-- Input 3: Decrement 3.6-3.4V -->
-            <div class="input-section hidden" id="input-3">
-                <label for="decrement_36_34V">Decrement 3.6-3.4V (s):</label>
-                <input type="number" step="0.01" name="decrement_36_34V" required>
-                <div class="description-section">
-                    <h3>Decrement 3.6-3.4V</h3>
-                    <p>The time taken for the battery voltage to drop from 3.6V to 3.4V during discharge.</p>
-                    <p><em>How to measure:</em> Monitor the voltage drop using a multimeter or battery analyzer.</p>
-                </div>
-                <button type="button" onclick="showNextInput(4)">Next</button>
-            </div>
-
-            <!-- Input 4: Max. Voltage Discharge -->
-            <div class="input-section hidden" id="input-4">
+            <!-- Input 1: Max. Voltage Discharge -->
+            <div class="input" id="input-1">
                 <label for="max_voltage_discharge">Max. Voltage Discharge (V):</label>
                 <input type="number" step="0.01" name="max_voltage_discharge" required>
                 <div class="description-section">
@@ -147,53 +112,17 @@
                     <p>The maximum voltage observed during the discharge cycle.</p>
                     <p><em>How to measure:</em> Record the highest voltage reading during discharge using a voltmeter.</p>
                 </div>
-                <button type="button" onclick="showNextInput(5)">Next</button>
+                <button type="button" onclick="showNextInput(2)">Next</button>
             </div>
 
-            <!-- Input 5: Min. Voltage Charge -->
-            <div class="input-section hidden" id="input-5">
+            <!-- Input 2: Min. Voltage Charge -->
+            <div class="input-section hidden" id="input-2">
                 <label for="min_voltage_charge">Min. Voltage Charge (V):</label>
                 <input type="number" step="0.01" name="min_voltage_charge" required>
                 <div class="description-section">
                     <h3>Min. Voltage Charge</h3>
                     <p>The minimum voltage observed during the charging cycle.</p>
                     <p><em>How to measure:</em> Record the lowest voltage reading during charging using a voltmeter.</p>
-                </div>
-                <button type="button" onclick="showNextInput(6)">Next</button>
-            </div>
-
-            <!-- Input 6: Time at 4.15V -->
-            <div class="input-section hidden" id="input-6">
-                <label for="time_at_415V">Time at 4.15V (s):</label>
-                <input type="number" step="0.01" name="time_at_415V" required>
-                <div class="description-section">
-                    <h3>Time at 4.15V</h3>
-                    <p>The time spent at 4.15V during the charging cycle.</p>
-                    <p><em>How to measure:</em> Use a battery monitoring tool to track the time spent at this voltage.</p>
-                </div>
-                <button type="button" onclick="showNextInput(7)">Next</button>
-            </div>
-
-            <!-- Input 7: Time Constant Current -->
-            <div class="input-section hidden" id="input-7">
-                <label for="time_constant_current">Time Constant Current (s):</label>
-                <input type="number" step="0.01" name="time_constant_current" required>
-                <div class="description-section">
-                    <h3>Time Constant Current</h3>
-                    <p>The time spent in the constant current phase of the charging cycle.</p>
-                    <p><em>How to measure:</em> Monitor the charging process and record the duration of the constant current phase.</p>
-                </div>
-                <button type="button" onclick="showNextInput(8)">Next</button>
-            </div>
-
-            <!-- Input 8: Charging Time -->
-            <div class="input-section hidden" id="input-8">
-                <label for="charging_time">Charging Time (s):</label>
-                <input type="number" step="0.01" name="charging_time" required>
-                <div class="description-section">
-                    <h3>Charging Time</h3>
-                    <p>The total time taken to fully charge the battery.</p>
-                    <p><em>How to measure:</em> Use a stopwatch or battery monitoring tool to measure the total charging duration.</p>
                 </div>
                 <button type="submit">Predict</button>
             </div>
